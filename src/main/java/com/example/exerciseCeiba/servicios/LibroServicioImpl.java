@@ -9,6 +9,9 @@ import com.example.exerciseCeiba.repositorios.LibroRepositorio;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class LibroServicioImpl implements LibroServicio {
 
@@ -34,5 +37,14 @@ public class LibroServicioImpl implements LibroServicio {
         }catch (EmptyResultDataAccessException e){
             throw new RegistroNoEncontradoException("Error, no existe el libro");
         }
+    }
+
+    @Override
+    public List<LibroDto> traerLibrosDisponibles() {
+        return libroRepositorio.findAll()
+                .stream()
+                //.filter(libro -> libroEstaDisponible(libro))
+                .map(libro -> libroMapper.libroEntidadToDto(libro))
+                .collect(Collectors.toList());
     }
 }
